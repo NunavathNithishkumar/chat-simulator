@@ -1,0 +1,87 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #f4f7f9;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+h1 {
+    color: #1a253c;
+    border-bottom: 2px solid #eef2f5;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+form {
+    background-color: #fdfdfe;
+    border: 1px solid #eef2f5;
+    border-radius: 6px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group input[type="file"],
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.form-group input[type="range"] {
+    width: 100%;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#loader { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 15px; padding: 40px; color: #555; }
+#loader.hidden { display: none; }
+.spinner { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+#results-container { margin-top: 20px; }
+.conversation-wrapper { background-color: #f9fafb; border: 1px solid #eef2f5; padding: 20px; border-radius: 6px; margin-bottom: 20px; }
+.conversation-wrapper h2 { margin-top: 0; color: #0056b3; font-size: 1.2em; }
+.message { padding: 12px; border-radius: 8px; margin-bottom: 8px; max-width: 90%; }
+.message strong { font-weight: 600; }
+.message.agent { background-color: #e9f5ff; border: 1px solid #cce7ff; }
+.message.user { background-color: #f0f0f0; border: 1px solid #e0e0e0; }
+.error-message { color: #D8000C; background-color: #FFD2D2; border: 1px solid #D8000C; padding: 15px; border-radius: 6px; }

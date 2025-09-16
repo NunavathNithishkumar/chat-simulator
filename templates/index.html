@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Test Simulator</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Calling Agent Test Simulator 🤖</h1>
+        <p>Upload a CSV with user profiles to simulate test conversations. Your CSV must contain <strong>name</strong>, <strong>requirements</strong>, and <strong>persona</strong> columns.</p>
+        
+        <form id="upload-form">
+            <div class="form-group">
+                <label for="csv-file">1. Upload User Profiles CSV</label>
+                <input type="file" id="csv-file" name="csvfile" accept=".csv" required>
+            </div>
+
+            <div class="form-group">
+                <label for="agent-model">2. Select Agent LLM</label>
+                <select name="agent_model" id="agent-model">
+                    <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                    <option value="gpt-4o-mini">GPT-4o mini</option>
+                    <option value="gpt-4.1-mini">GPT-4.1 mini</option>
+                    <option value="gpt-4o">GPT-4o</option>
+                    <option value="gpt-4.1">GPT-4.1</option>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="agent-temperature">3. Agent Temperature: <span id="temp-value">0.7</span></label>
+                <input type="range" id="agent-temperature" name="agent_temperature" min="0" max="1.0" step="0.1" value="0.7">
+            </div>
+
+            <button type="submit">Start Simulation</button>
+        </form>
+
+        <div id="loader" class="hidden">
+            <div class="spinner"></div>
+            <p>Simulating conversations... Please wait.</p>
+        </div>
+
+        <div id="results-container">
+            </div>
+    </div>
+
+    <script>
+        // Update the temperature value display when the slider is moved
+        document.getElementById('agent-temperature').addEventListener('input', function(event) {
+            document.getElementById('temp-value').textContent = event.target.value;
+        });
+
+        // Handle the form submission
+        document.getElementById('upload-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const resultsContainer = document.getElementById('results-container');
+            const loader = document.getElementById('loader');
+
+            // Gather form data
+            const formData = new FormData();
+            formData.append('csvfile', document.getElementById('csv-file').files[0]);
+            formData.append('agent_model', document.getElementById('agent-model').value);
+            formData.append('agent_temperature', document.getElementById('agent-temperature').value);
+
+            resultsContainer.innerHTML = ''; // Clear previous results
+            loader.classList.remove('hidden'); // Show loader
+
+            try {
+                const response = await fetch('/simulate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || `HTTP Error: ${response.status}`);
+                }
+                
+                displayConversations(data);
+
+            } catch (error) {
+                resultsContainer.innerHTML = `<div class="error-message"><strong>Error:</strong> ${error.message}</div>`;
+            } finally {
+                loader.classList.add('hidden'); // Hide loader
+            }
+        });
+
+        function displayConversations(conversations) {
+            const container = document.getElementById('results-container');
+            if (conversations.length === 0) {
+                container.innerHTML = '<p>No conversations were generated.</p>';
+                return;
+            }
+
+            conversations.forEach(convo => {
+                const convoWrapper = document.createElement('div');
+                convoWrapper.className = 'conversation-wrapper';
+
+                const header = document.createElement('h2');
+                header.textContent = `Conversation with: ${convo.user_name}`;
+                convoWrapper.appendChild(header);
+
+                convo.transcript.forEach(turn => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = turn.role === 'Agent' ? 'message agent' : 'message user';
+                    
+                    const roleSpan = document.createElement('strong');
+                    roleSpan.textContent = `${turn.role}: `;
+                    
+                    const textNode = document.createTextNode(turn.text);
+                    
+                    messageDiv.appendChild(roleSpan);
+                    messageDiv.appendChild(textNode);
+                    convoWrapper.appendChild(messageDiv);
+                });
+                container.appendChild(convoWrapper);
+            });
+        }
+    </script>
+</body>
+</html>
